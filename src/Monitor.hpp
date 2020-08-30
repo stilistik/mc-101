@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include <string>
+#include <vector>
 
 class Monitor
 {
@@ -13,6 +14,7 @@ private:
 public:
   Monitor(uint interval);
   void print(std::string str);
+  void print(std::vector<int>& ec);
 };
 
 #endif /* MONITOR_HPP_ */

@@ -1,18 +1,26 @@
 #include <Arduino.h>
 #include "ChannelManager.hpp"
+#include "InputManager.hpp"
+#include "MidiManager.hpp"
 #include "Monitor.hpp"
 
-ChannelManager *chmgr;
+ChannelManager *channelManager;
+InputManager *inputManager;
+MidiManager *midiManager;
 Monitor *monitor;
 
 void setup()
 {
-  chmgr = new ChannelManager();
   monitor = new Monitor(200);
+  channelManager = new ChannelManager();
+  inputManager = new InputManager();
+  midiManager = new MidiManager();
 }
 
 void loop()
 {
-  chmgr->update();
-  monitor->print("monitor");
+  channelManager->update();
+  inputManager->update();
+  midiManager->update();
+  monitor->print("hello");
 }
