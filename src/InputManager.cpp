@@ -1,8 +1,12 @@
 #include "InputManager.hpp"
-#include "Arduino.h"
+#include <stdlib.h>
 
-InputManager::InputManager()
+InputManager::InputManager(int potCount, Monitor *monitor)
 {
+  this->monitor = monitor;
+  this->potValues = std::vector<int>(potCount, 0);
+  this->prevPotValues = std::vector<int>(potCount, 0);
+
   // multiplexer
   pinMode(select_pin_A, OUTPUT);
   pinMode(select_pin_B, OUTPUT);
@@ -50,18 +54,35 @@ std::vector<int> &InputManager::getPotValues()
   return potValues;
 }
 
+std::map<int, int> &InputManager::getChangedPotValues()
+{
+  std::map<int, int> changes = {};
+  for (uint ctr = 0; ctr < potValues.size(); ++ctr)
+  {
+    if (abs(potValues[ctr] - prevPotValues[ctr]))
+    {
+      changes[ctr] = potValues[ctr];
+      prevPotValues[ctr] = potValues[ctr];
+    }
+  }
+  return changes;
+}
+
 int InputManager::mapSliderValue(int value)
 {
   int range = this->sliderFromInterval["max"] - this->sliderFromInterval["min"];
   float multiplier = (float)(value) / range;
   int mappedValue = (int)(multiplier * 1023) - this->sliderFromInterval["min"];
-  
+
   // clamp to range 0, 1023
-  if (mappedValue < 0) mappedValue = 0;
-  if (mappedValue > 1023) mappedValue = 1023;
+  if (mappedValue < 0)
+    mappedValue = 0;
+  if (mappedValue > 1023)
+    mappedValue = 1023;
   return mappedValue;
 }
 
-int InputManager::getPotIndexFromCounter(int ctr) {
+int InputManager::getPotIndexFromCounter(int ctr)
+{
   return this->potIndices[ctr];
 }

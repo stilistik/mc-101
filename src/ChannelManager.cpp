@@ -1,8 +1,10 @@
 #include "ChannelManager.hpp"
 #include "Arduino.h"
 
-ChannelManager::ChannelManager()
+ChannelManager::ChannelManager(int channelCount, Monitor *monitor)
 {
+  this->monitor = monitor;
+  this->channelCount = channelCount;
   pinMode(button_pin_1, INPUT_PULLDOWN);
   pinMode(button_pin_2, INPUT_PULLDOWN);
 };
@@ -14,7 +16,7 @@ int ChannelManager::update()
   if (ch_plus_button.risingEdge())
   {
     currentChannel++;
-    if (currentChannel >= maxChannel)
+    if (currentChannel >= this->channelCount)
     {
       currentChannel = 0;
     }
@@ -27,10 +29,15 @@ int ChannelManager::update()
     currentChannel--;
     if (currentChannel < 0)
     {
-      currentChannel = maxChannel - 1;
+      currentChannel = this->channelCount - 1;
     }
   }
 
   display.show(currentChannel);
   return 0;
 };
+
+int ChannelManager::getCurrentChannel()
+{
+  return currentChannel;
+}

@@ -1,17 +1,17 @@
 #ifndef INPUTMANAGER_HPP_
 #define INPUTMANAGER_HPP_
 
-#define MAX_CHANNEL_COUNT 10
-#define POT_COUNT 16
-
 #include <vector>
 #include <map>
 #include "Bounce2.h"
 #include "Arduino.h"
+#include "Monitor.hpp"
 
 class InputManager
 {
 private:
+  Monitor *monitor;
+
   const int multiplexer_pin_1 = A19;
   const int multiplexer_pin_2 = A18;
   const int multiplexer_pin_3 = A17;
@@ -24,8 +24,8 @@ private:
   int bit2;
   int bit3;
 
-  std::vector<int> potValues = std::vector<int>(POT_COUNT, 0);     // the values of the physical potentiometer controls that are read every cycle
-  std::vector<int> prevPotValues = std::vector<int>(POT_COUNT, 0); // the old potentiometer values for comparison
+  std::vector<int> potValues;     // the values of the physical potentiometer controls that are read every cycle
+  std::vector<int> prevPotValues; // the old potentiometer values for comparison
 
   // used to normalize slider pot value range to [0, 1023]
   std::map<std::string, int> sliderFromInterval = {{"min", 12}, {"max", 1012}};
@@ -37,9 +37,10 @@ private:
   int getPotIndexFromCounter(int ctr);
 
 public:
-  InputManager();
+  InputManager(int potCount, Monitor *monitor);
   void update();
   std::vector<int> &getPotValues();
+  std::map<int, int> &getChangedPotValues();
 };
 
 #endif /* INPUTMANAGER_HPP_ */
