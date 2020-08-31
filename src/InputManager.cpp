@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <map>
 
-InputManager::InputManager(int potCount, Monitor *monitor)
+InputManager::InputManager(Monitor *monitor)
 {
   this->monitor = monitor;
-  this->potValues = std::vector<int>(potCount, 0);
-  this->prevPotValues = std::vector<int>(potCount, 0);
+  this->potValues = std::vector<int>(totalPots, 0);
+  this->prevPotValues = std::vector<int>(totalPots, 0);
 
   // multiplexer
   pinMode(select_pin_A, OUTPUT);
@@ -17,7 +17,6 @@ InputManager::InputManager(int potCount, Monitor *monitor)
 
 void InputManager::update()
 {
-  // read motorized pots
   for (uint ctr = 0; ctr < potValues.size(); ++ctr)
   {
     // convert ctr to bit

@@ -5,7 +5,7 @@
 #include "Arduino.h"
 
 MidiManager *instance;
-MidiManager::MidiManager(int midiControlCount, ChannelManager *channelManager, InputManager *inputManager, Monitor *monitor)
+MidiManager::MidiManager(ChannelManager *channelManager, InputManager *inputManager, Monitor *monitor)
 {
   // store this instance as the handler instance
   instance = this;
@@ -14,7 +14,6 @@ MidiManager::MidiManager(int midiControlCount, ChannelManager *channelManager, I
   this->channelManager = channelManager;
   this->inputManager = inputManager;
   this->monitor = monitor;
-  midiValues = std::vector<int>(midiControlCount);
 
   // set the midi control change handler
   usbMIDI.setHandleControlChange(MidiManager::staticControlChangeHandler);
@@ -23,12 +22,13 @@ MidiManager::MidiManager(int midiControlCount, ChannelManager *channelManager, I
 void MidiManager::handleMidiControlChange(byte channel, byte control, byte value)
 {
   // store the value in the parameter array
-  MidiManager::midiValues[control] = value;
+  midiValues[control] = value;
 }
 
 void MidiManager::update()
 {
   std::map<int, int> changes = inputManager->getChangedPotValues();
+  monitor->print(changes);
 
   if (changes.size() == 0)
     return;
@@ -36,8 +36,14 @@ void MidiManager::update()
   std::map<int, int>::iterator it;
   for (it = changes.begin(); it != changes.end(); ++it)
   {
+    // compute midi value
     int index = it->first;
     int midiValue = map(it->second, 0, 1023, 0, 127);
+    
+    // store midi value
+    midiValues[index] = midiValue;
+
+    // send midi value to daw
     usbMIDI.sendControlChange(index, midiValue, 1);
   }
 }

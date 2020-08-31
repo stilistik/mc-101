@@ -14,13 +14,14 @@ private:
   InputManager *inputManager;
   Monitor *monitor;
 
-  std::vector<int> midiValues;
+  const int midiControls = STATIC_POTENTIOMETERS + CHANNELS * CHANNEL_POTENTIOMETERS;
+  std::vector<int> midiValues = std::vector<int>(midiControls);
   void handleMidiControlChange(byte channel, byte control, byte value);
 
   static void staticControlChangeHandler(byte channel, byte control, byte value);
 
 public:
-  MidiManager(int midiControlCount, ChannelManager *channelManager, InputManager *inputManager, Monitor *monitor);
+  MidiManager(ChannelManager *channelManager, InputManager *inputManager, Monitor *monitor);
   void update();
   std::vector<int> &getMidiValues();
 };

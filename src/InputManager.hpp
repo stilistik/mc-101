@@ -7,10 +7,15 @@
 #include "Arduino.h"
 #include "Monitor.hpp"
 
+#define STATIC_POTENTIOMETERS 6
+#define CHANNEL_POTENTIOMETERS 10
+
 class InputManager
 {
 private:
   Monitor *monitor;
+
+  const int totalPots = STATIC_POTENTIOMETERS + CHANNEL_POTENTIOMETERS;
 
   const int multiplexer_pin_1 = A19;
   const int multiplexer_pin_2 = A18;
@@ -33,13 +38,13 @@ private:
   std::vector<int> sliderCalibration = {12, 1012};
 
   // used to intex the pots in a meaningful order
-  std::vector<int> potIndices = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 14, 13, 10, 15, 12, 11};
+  std::vector<int> potIndices = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 5, 4, 1, 0, 3, 2};
 
   int mapSliderValue(int value);
   int getPotIndexFromCounter(int ctr);
 
 public:
-  InputManager(int potCount, Monitor *monitor);
+  InputManager(Monitor *monitor);
   void update();
   std::vector<int> &getPotValues();
   std::map<int, int> getChangedPotValues();
