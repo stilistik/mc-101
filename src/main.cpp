@@ -15,7 +15,7 @@ Monitor *monitor;
 
 void setup()
 {
-  monitor = new Monitor(200);
+  monitor = new Monitor(50);
   channelManager = new ChannelManager(CHANNEL_COUNT, monitor);
   inputManager = new InputManager(MIDI_CONTROL_COUNT, monitor);
   midiManager = new MidiManager(MIDI_CONTROL_COUNT, channelManager, inputManager, monitor);
@@ -26,4 +26,5 @@ void loop()
   channelManager->update();
   inputManager->update();
   midiManager->update();
+  // monitor->print("test");
 }

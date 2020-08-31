@@ -24,11 +24,13 @@ private:
   int bit2;
   int bit3;
 
+  const int sensitivity = 5;
+
   std::vector<int> potValues;     // the values of the physical potentiometer controls that are read every cycle
   std::vector<int> prevPotValues; // the old potentiometer values for comparison
 
   // used to normalize slider pot value range to [0, 1023]
-  std::map<std::string, int> sliderFromInterval = {{"min", 12}, {"max", 1012}};
+  std::vector<int> sliderCalibration = {12, 1012};
 
   // used to intex the pots in a meaningful order
   std::vector<int> potIndices = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 14, 13, 10, 15, 12, 11};
@@ -40,7 +42,7 @@ public:
   InputManager(int potCount, Monitor *monitor);
   void update();
   std::vector<int> &getPotValues();
-  std::map<int, int> &getChangedPotValues();
+  std::map<int, int> getChangedPotValues();
 };
 
 #endif /* INPUTMANAGER_HPP_ */

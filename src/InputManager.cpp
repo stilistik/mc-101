@@ -1,5 +1,7 @@
 #include "InputManager.hpp"
+#include "Arduino.h"
 #include <stdlib.h>
+#include <map>
 
 InputManager::InputManager(int potCount, Monitor *monitor)
 {
@@ -54,14 +56,14 @@ std::vector<int> &InputManager::getPotValues()
   return potValues;
 }
 
-std::map<int, int> &InputManager::getChangedPotValues()
+std::map<int, int> InputManager::getChangedPotValues()
 {
-  std::map<int, int> changes = {};
+  std::map<int, int> changes;
   for (uint ctr = 0; ctr < potValues.size(); ++ctr)
   {
-    if (abs(potValues[ctr] - prevPotValues[ctr]))
+    if (abs(potValues[ctr] - prevPotValues[ctr]) > sensitivity)
     {
-      changes[ctr] = potValues[ctr];
+      changes.insert({ctr, potValues[ctr]});
       prevPotValues[ctr] = potValues[ctr];
     }
   }
@@ -70,15 +72,14 @@ std::map<int, int> &InputManager::getChangedPotValues()
 
 int InputManager::mapSliderValue(int value)
 {
-  int range = this->sliderFromInterval["max"] - this->sliderFromInterval["min"];
-  float multiplier = (float)(value) / range;
-  int mappedValue = (int)(multiplier * 1023) - this->sliderFromInterval["min"];
+  int mappedValue = map(value, this->sliderCalibration[0], this->sliderCalibration[1], 0, 1023);
 
   // clamp to range 0, 1023
   if (mappedValue < 0)
     mappedValue = 0;
   if (mappedValue > 1023)
     mappedValue = 1023;
+
   return mappedValue;
 }
 
