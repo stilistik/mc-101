@@ -17,7 +17,7 @@ private:
   const int midiControls = STATIC_POTENTIOMETERS + CHANNELS * CHANNEL_POTENTIOMETERS;
   std::vector<int> midiValues = std::vector<int>(midiControls);
   void handleMidiControlChange(byte channel, byte control, byte value);
-
+  int getMidiChannelFromPotIndex(int potIndex);
   static void staticControlChangeHandler(byte channel, byte control, byte value);
 
 public:

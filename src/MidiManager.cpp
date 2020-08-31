@@ -28,20 +28,25 @@ void MidiManager::handleMidiControlChange(byte channel, byte control, byte value
 void MidiManager::update()
 {
   std::map<int, int> changes = inputManager->getChangedPotValues();
-  monitor->print(changes);
+  // monitor->print(changes);
 
   if (changes.size() == 0)
+  {
     return;
+  }
 
   std::map<int, int>::iterator it;
   for (it = changes.begin(); it != changes.end(); ++it)
   {
     // compute midi value
-    int index = it->first;
+    int potIndex = it->first;
     int midiValue = map(it->second, 0, 1023, 0, 127);
-    
+
+    // get the midi channel
+    int midiChannel = this->getMidiChannelFromPotIndex(potIndex);
+
     // store midi value
-    midiValues[index] = midiValue;
+    midiValues[midiChannel] = midiValue;
 
     // send midi value to daw
     usbMIDI.sendControlChange(index, midiValue, 1);
@@ -51,6 +56,19 @@ void MidiManager::update()
 void MidiManager::staticControlChangeHandler(byte channel, byte control, byte value)
 {
   instance->handleMidiControlChange(channel, control, value);
+}
+
+int MidiManager::getMidiChannelFromPotIndex(int potIndex)
+{
+  if (potIndex < STATIC_POTENTIOMETERS)
+  {
+    return potIndex;
+  }
+  else
+  {
+    int channel = channelManager->getCurrentChannel();
+    return STATIC_POTENTIOMETERS + channel * CHANNEL_POTENTIOMETERS + (potIndex - STATIC_POTENTIOMETERS);
+  }
 }
 
 std::vector<int> &MidiManager::getMidiValues()
