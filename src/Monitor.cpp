@@ -28,6 +28,7 @@ Monitor::Monitor(uint interval)
     }
   }
   Serial.println("Serial connected.");
+  digitalWrite(ledPin, LOW);
 }
 
 void Monitor::print(int number)
