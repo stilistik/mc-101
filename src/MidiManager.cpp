@@ -3,6 +3,7 @@
 #include "ChannelManager.hpp"
 #include "Monitor.hpp"
 #include "Arduino.h"
+#include <stdlib.h>
 
 MidiManager *instance;
 MidiManager::MidiManager(ChannelManager *channelManager, InputManager *inputManager, Monitor *monitor)
@@ -15,6 +16,14 @@ MidiManager::MidiManager(ChannelManager *channelManager, InputManager *inputMana
   this->inputManager = inputManager;
   this->monitor = monitor;
 
+  // initialize value containers
+  for (int ctr = 0; ctr < midiControlCount; ++ctr)
+  {
+    midiValues[ctr] = 0;
+    remoteValues[ctr] = 0;
+    sync[ctr] = false;
+  }
+
   // set the midi control change handler
   usbMIDI.setHandleControlChange(MidiManager::staticControlChangeHandler);
 }
@@ -22,7 +31,7 @@ MidiManager::MidiManager(ChannelManager *channelManager, InputManager *inputMana
 void MidiManager::handleMidiControlChange(byte channel, byte control, byte value)
 {
   // store the value in the parameter array
-  midiValues[control] = value;
+  remoteValues[control] = value;
 }
 
 void MidiManager::update()
@@ -47,7 +56,12 @@ void MidiManager::update()
 
     // store midi value
     midiValues[midiChannel] = midiValue;
+    int remoteValue = this->getRemoteValue(midiChannel);
 
+    if (abs(midiValue - remoteValue) < 2)
+    {
+      sync[midiChannel] = true;
+    }
     // send midi value to daw
     usbMIDI.sendControlChange(index, midiValue, 1);
   }
@@ -71,7 +85,17 @@ int MidiManager::getMidiChannelFromPotIndex(int potIndex)
   }
 }
 
-std::vector<int> &MidiManager::getMidiValues()
+int MidiManager::getMidiValue(int midiChannel)
 {
-  return midiValues;
+  return midiValues[midiChannel];
+}
+
+int MidiManager::getRemoteValue(int midiChannel)
+{
+  return remoteValues[midiChannel];
+}
+
+bool MidiManager::isSynchronized(int midiChannel)
+{
+  return sync[midiChannel];
 }

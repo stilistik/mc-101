@@ -14,8 +14,13 @@ private:
   InputManager *inputManager;
   Monitor *monitor;
 
-  const int midiControls = STATIC_POTENTIOMETERS + CHANNELS * CHANNEL_POTENTIOMETERS;
-  std::vector<int> midiValues = std::vector<int>(midiControls);
+  const int tolerance = 2;
+  const int midiControlCount = STATIC_POTENTIOMETERS + CHANNELS * CHANNEL_POTENTIOMETERS;
+
+  std::vector<int> midiValues = std::vector<int>(midiControlCount);
+  std::vector<int> remoteValues = std::vector<int>(midiControlCount);
+  std::vector<bool> sync = std::vector<bool>(midiControlCount);
+
   void handleMidiControlChange(byte channel, byte control, byte value);
   int getMidiChannelFromPotIndex(int potIndex);
   static void staticControlChangeHandler(byte channel, byte control, byte value);
@@ -23,7 +28,9 @@ private:
 public:
   MidiManager(ChannelManager *channelManager, InputManager *inputManager, Monitor *monitor);
   void update();
-  std::vector<int> &getMidiValues();
+  int getMidiValue(int midiChannel);
+  int getRemoteValue(int midiChannel);
+  bool isSynchronized(int midiChannel);
 };
 
 #endif /* MIDIMANAGER_HPP_ */

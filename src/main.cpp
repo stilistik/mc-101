@@ -17,7 +17,7 @@ void setup()
   channelManager = new ChannelManager(monitor);
   inputManager = new InputManager(monitor);
   midiManager = new MidiManager(channelManager, inputManager, monitor);
-  motorManager = new MotorManager(monitor);
+  motorManager = new MotorManager(channelManager, midiManager, monitor);
 }
 
 void loop()
