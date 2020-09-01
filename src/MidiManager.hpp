@@ -24,13 +24,16 @@ private:
   void handleMidiControlChange(byte channel, byte control, byte value);
   int getMidiChannelFromPotIndex(int potIndex);
   static void staticControlChangeHandler(byte channel, byte control, byte value);
-
+  void sendMidi();
+  void updateSync();
+  
 public:
   MidiManager(MasterController *master);
   void update();
   int getMidiValue(int midiChannel);
   int getRemoteValue(int midiChannel);
   bool isSynchronized(int midiChannel);
+
   void onChannelChange(int newChannel);
 };
 

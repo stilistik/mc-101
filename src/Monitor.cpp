@@ -78,6 +78,23 @@ void Monitor::print(std::vector<int> &vec)
   }
 }
 
+void Monitor::print(std::vector<bool> &vec)
+{
+  uint now = millis();
+  if (now - this->lastUpdated > this->interval)
+  {
+    if (vec.size() == 0)
+      return;
+    for (uint i = 0; i < vec.size(); ++i)
+    {
+      Serial.print(vec[i]);
+      Serial.print(" ");
+    }
+    Serial.println("");
+    this->lastUpdated = now;
+  }
+}
+
 void Monitor::print(std::map<int, int> &map)
 {
   uint now = millis();

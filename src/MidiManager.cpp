@@ -21,7 +21,7 @@ MidiManager::MidiManager(MasterController *master)
   }
 
   // set the midi control change handler
-  usbMIDI.setHandleControlChange(MidiManager::staticControlChangeHandler);
+  usbMIDI.setHandleControlChange(staticControlChangeHandler);
 }
 
 void MidiManager::handleMidiControlChange(byte channel, byte control, byte value)
@@ -33,7 +33,42 @@ void MidiManager::handleMidiControlChange(byte channel, byte control, byte value
 
 void MidiManager::update()
 {
-  std::vector<int> potValues =  master->inputManager->getPotValues();
+  while (usbMIDI.read())
+  {
+    ; // read all incoming midi messages
+  }
+  this->updateSync();
+  this->sendMidi();
+
+  master->monitor->print(sync);
+}
+
+void MidiManager::sendMidi()
+{
+  std::map<int, int> changes = master->inputManager->getChangedPotValues();
+  if (changes.size() == 0)
+  {
+    return;
+  }
+
+  std::map<int, int>::iterator it;
+  for (it = changes.begin(); it != changes.end(); ++it)
+  {
+    // compute midi value
+    int potIndex = it->first;
+    int midiValue = map(it->second, 0, 1023, 0, 127);
+
+    // get the midi channel
+    int midiChannel = this->getMidiChannelFromPotIndex(potIndex);
+
+    // send midi value to daw
+    usbMIDI.sendControlChange(midiChannel, midiValue, 1);
+  }
+}
+
+void MidiManager::updateSync()
+{
+  std::vector<int> potValues = master->inputManager->getPotValues();
   for (uint ctr = 0; ctr < potValues.size(); ++ctr)
   {
     // compute midi value
@@ -50,8 +85,6 @@ void MidiManager::update()
     {
       sync[midiChannel] = true;
     }
-    // send midi value to daw
-    usbMIDI.sendControlChange(index, midiValue, 1);
   }
 }
 
