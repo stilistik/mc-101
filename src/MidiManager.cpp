@@ -1,9 +1,12 @@
 #include "MidiManager.hpp"
 #include "Arduino.h"
 #include <stdlib.h>
+#include <algorithm>
 #include "MasterController.hpp"
 
+// keep track of the midi manager instance to route events from static handlers
 MidiManager *instance;
+
 MidiManager::MidiManager(MasterController *master)
 {
   // store this instance as the handler instance
@@ -20,6 +23,9 @@ MidiManager::MidiManager(MasterController *master)
     sync[ctr] = false;
   }
 
+  // set led pinmode
+  pinMode(ledPin, OUTPUT);
+
   // set the midi control change handler
   usbMIDI.setHandleControlChange(staticControlChangeHandler);
 }
@@ -33,14 +39,24 @@ void MidiManager::handleMidiControlChange(byte channel, byte control, byte value
 
 void MidiManager::update()
 {
+  // update the synchronized state
+  this->updateSync();
+
+  // if we are not synchronizing, send midi changes
+  if (!isCurrentChannelSynchronizing())
+  {
+    this->sendMidi();
+    digitalWrite(ledPin, LOW);
+  }
+  else
+  {
+    digitalWrite(ledPin, HIGH);
+  }
+
   while (usbMIDI.read())
   {
     ; // read all incoming midi messages
   }
-  this->updateSync();
-  this->sendMidi();
-
-  master->monitor->print(sync);
 }
 
 void MidiManager::sendMidi()
@@ -91,6 +107,19 @@ void MidiManager::updateSync()
 void MidiManager::staticControlChangeHandler(byte channel, byte control, byte value)
 {
   instance->handleMidiControlChange(channel, control, value);
+}
+
+bool MidiManager::isCurrentChannelSynchronizing()
+{
+  int channel = master->channelManager->getCurrentChannel();
+  int start = STATIC_POTENTIOMETERS + channel * CHANNEL_POTENTIOMETERS;
+  int end = STATIC_POTENTIOMETERS + channel * CHANNEL_POTENTIOMETERS + MOTOR_POTENTIOMETERS;
+  for (int ctr = start; ctr < end; ++ctr)
+  {
+    if (!sync[ctr])
+      return true;
+  }
+  return false;
 }
 
 int MidiManager::getMidiChannelFromPotIndex(int potIndex)

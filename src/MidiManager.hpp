@@ -14,6 +14,7 @@ class MidiManager
 private:
   MasterController *master;
 
+  const int ledPin = 21;
   const int tolerance = 2;
   const int midiControlCount = STATIC_POTENTIOMETERS + CHANNELS * CHANNEL_POTENTIOMETERS;
 
@@ -26,7 +27,8 @@ private:
   static void staticControlChangeHandler(byte channel, byte control, byte value);
   void sendMidi();
   void updateSync();
-  
+  bool isCurrentChannelSynchronizing();
+
 public:
   MidiManager(MasterController *master);
   void update();
