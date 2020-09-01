@@ -3,15 +3,17 @@
 
 #include "Display.hpp"
 #include "Bounce2.h"
-#include "Monitor.hpp"
 
 #define CHANNELS 10
+
+class MasterController;
 
 class ChannelManager
 {
 private:
+  MasterController *master;
   Display display;
-  Monitor *monitor;
+  
 
   int currentChannel = 0;
 
@@ -22,7 +24,7 @@ private:
   Bounce ch_minus_button = Bounce(button_pin_2, 10);
 
 public:
-  ChannelManager(Monitor *monitor);
+  ChannelManager(MasterController *master);
   int update();
   int getCurrentChannel();
 };

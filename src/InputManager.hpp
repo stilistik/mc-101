@@ -5,15 +5,16 @@
 #include <map>
 #include "Bounce2.h"
 #include "Arduino.h"
-#include "Monitor.hpp"
 
 #define STATIC_POTENTIOMETERS 6
 #define CHANNEL_POTENTIOMETERS 10
 
+class MasterController;
+
 class InputManager
 {
 private:
-  Monitor *monitor;
+  MasterController *master;
 
   const int totalPots = STATIC_POTENTIOMETERS + CHANNEL_POTENTIOMETERS;
 
@@ -44,7 +45,7 @@ private:
   int getPotIndexFromCounter(int ctr);
 
 public:
-  InputManager(Monitor *monitor);
+  InputManager(MasterController *master);
   void update();
   std::vector<int> &getPotValues();
   std::map<int, int> getChangedPotValues();

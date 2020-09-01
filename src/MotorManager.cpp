@@ -1,10 +1,10 @@
+#include "Arduino.h"
+#include "MasterController.hpp"
 #include "MotorManager.hpp"
 
-MotorManager::MotorManager(ChannelManager *channelManager, MidiManager *midiManager, Monitor *monitor)
+MotorManager::MotorManager(MasterController *master)
 {
-  this->channelManager = channelManager;
-  this->midiManager = midiManager;
-  this->monitor = monitor;
+  this->master = master;
 
   // activate motor pins
   pinMode(motorEnablePin, OUTPUT);
@@ -21,9 +21,9 @@ void MotorManager::update()
   {
     int ch = this->getMidiChannelFromPotIndex(ctr);
 
-    int midiValue = midiManager->getMidiValue(ch);
-    int remoteValue = midiManager->getRemoteValue(ch);
-    bool isSync = midiManager->isSynchronized(ch);
+    int midiValue = master->midiManager->getMidiValue(ch);
+    int remoteValue = master->midiManager->getRemoteValue(ch);
+    bool isSync = master->midiManager->isSynchronized(ch);
 
     if ((midiValue < remoteValue + tolerance) && (midiValue > remoteValue - tolerance))
     {
@@ -51,6 +51,6 @@ void MotorManager::update()
 
 int MotorManager::getMidiChannelFromPotIndex(int potIndex)
 {
-  int channel = channelManager->getCurrentChannel();
+  int channel = master->channelManager->getCurrentChannel();
   return STATIC_POTENTIOMETERS + channel * CHANNEL_POTENTIOMETERS + potIndex;
 }

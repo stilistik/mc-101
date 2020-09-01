@@ -7,12 +7,12 @@
 #include "ChannelManager.hpp"
 #include "Monitor.hpp"
 
+class MasterController;
+
 class MidiManager
 {
 private:
-  ChannelManager *channelManager;
-  InputManager *inputManager;
-  Monitor *monitor;
+  MasterController *master;
 
   const int tolerance = 2;
   const int midiControlCount = STATIC_POTENTIOMETERS + CHANNELS * CHANNEL_POTENTIOMETERS;
@@ -26,11 +26,12 @@ private:
   static void staticControlChangeHandler(byte channel, byte control, byte value);
 
 public:
-  MidiManager(ChannelManager *channelManager, InputManager *inputManager, Monitor *monitor);
+  MidiManager(MasterController *master);
   void update();
   int getMidiValue(int midiChannel);
   int getRemoteValue(int midiChannel);
   bool isSynchronized(int midiChannel);
+  void onChannelChange(int newChannel);
 };
 
 #endif /* MIDIMANAGER_HPP_ */

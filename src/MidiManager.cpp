@@ -1,20 +1,16 @@
 #include "MidiManager.hpp"
-#include "InputManager.hpp"
-#include "ChannelManager.hpp"
-#include "Monitor.hpp"
 #include "Arduino.h"
 #include <stdlib.h>
+#include "MasterController.hpp"
 
 MidiManager *instance;
-MidiManager::MidiManager(ChannelManager *channelManager, InputManager *inputManager, Monitor *monitor)
+MidiManager::MidiManager(MasterController *master)
 {
   // store this instance as the handler instance
   instance = this;
 
   // init
-  this->channelManager = channelManager;
-  this->inputManager = inputManager;
-  this->monitor = monitor;
+  this->master = master;
 
   // initialize value containers
   for (int ctr = 0; ctr < midiControlCount; ++ctr)
@@ -36,23 +32,14 @@ void MidiManager::handleMidiControlChange(byte channel, byte control, byte value
 
 void MidiManager::update()
 {
-  std::map<int, int> changes = inputManager->getChangedPotValues();
-  // monitor->print(changes);
-
-  if (changes.size() == 0)
-  {
-    return;
-  }
-
-  std::map<int, int>::iterator it;
-  for (it = changes.begin(); it != changes.end(); ++it)
+  std::vector<int> potValues =  master->inputManager->getPotValues();
+  for (uint ctr = 0; ctr < potValues.size(); ++ctr)
   {
     // compute midi value
-    int potIndex = it->first;
-    int midiValue = map(it->second, 0, 1023, 0, 127);
+    int midiValue = map(potValues[ctr], 0, 1023, 0, 127);
 
     // get the midi channel
-    int midiChannel = this->getMidiChannelFromPotIndex(potIndex);
+    int midiChannel = this->getMidiChannelFromPotIndex(ctr);
 
     // store midi value
     midiValues[midiChannel] = midiValue;
@@ -80,7 +67,7 @@ int MidiManager::getMidiChannelFromPotIndex(int potIndex)
   }
   else
   {
-    int channel = channelManager->getCurrentChannel();
+    int channel = master->channelManager->getCurrentChannel();
     return STATIC_POTENTIOMETERS + channel * CHANNEL_POTENTIOMETERS + (potIndex - STATIC_POTENTIOMETERS);
   }
 }
@@ -98,4 +85,14 @@ int MidiManager::getRemoteValue(int midiChannel)
 bool MidiManager::isSynchronized(int midiChannel)
 {
   return sync[midiChannel];
+}
+
+void MidiManager::onChannelChange(int channel)
+{
+  int minCh = STATIC_POTENTIOMETERS + channel * CHANNEL_POTENTIOMETERS;
+  int maxCh = STATIC_POTENTIOMETERS + (channel + 1) * CHANNEL_POTENTIOMETERS;
+  for (int ch = minCh; ch < maxCh; ++ch)
+  {
+    sync[ch] = false;
+  }
 }

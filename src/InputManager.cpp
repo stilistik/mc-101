@@ -1,11 +1,13 @@
-#include "InputManager.hpp"
 #include "Arduino.h"
 #include <stdlib.h>
 #include <map>
+#include "MasterController.hpp"
+#include "InputManager.hpp"
 
-InputManager::InputManager(Monitor *monitor)
+InputManager::InputManager(MasterController *master)
 {
-  this->monitor = monitor;
+  this->master = master;
+
   this->potValues = std::vector<int>(totalPots, 0);
   this->prevPotValues = std::vector<int>(totalPots, 0);
 

@@ -1,9 +1,10 @@
-#include "ChannelManager.hpp"
 #include "Arduino.h"
+#include "MasterController.hpp"
+#include "ChannelManager.hpp"
 
-ChannelManager::ChannelManager(Monitor *monitor)
+ChannelManager::ChannelManager(MasterController *master)
 {
-  this->monitor = monitor;
+  this->master = master;
   pinMode(button_pin_1, INPUT_PULLDOWN);
   pinMode(button_pin_2, INPUT_PULLDOWN);
 };
@@ -19,6 +20,7 @@ int ChannelManager::update()
     {
       currentChannel = 0;
     }
+    master->midiManager->onChannelChange(currentChannel);
   }
 
   // channel minus button
@@ -30,6 +32,7 @@ int ChannelManager::update()
     {
       currentChannel = CHANNELS - 1;
     }
+    master->midiManager->onChannelChange(currentChannel);
   }
 
   display.show(currentChannel);

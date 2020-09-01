@@ -1,18 +1,14 @@
 #ifndef MOTORMANAGER_HPP_
 #define MOTORMANAGER_HPP_
 
-#include "MidiManager.hpp"
-#include "ChannelManager.hpp"
-#include "Monitor.hpp"
-
 #define MOTOR_POTENTIOMETERS 5
+
+class MasterController;
 
 class MotorManager
 {
 private:
-  Monitor *monitor;
-  MidiManager *midiManager;
-  ChannelManager *channelManager;
+  MasterController *master;
 
   const int motorEnablePin = 0;
   const int motorForwardPins[MOTOR_POTENTIOMETERS] = {1, 3, 5, 7, 9};
@@ -22,7 +18,7 @@ private:
   int getMidiChannelFromPotIndex(int potIndex);
 
 public:
-  MotorManager(ChannelManager *channelManager, MidiManager *midiManager, Monitor *monitor);
+  MotorManager(MasterController *master);
   void update();
 };
 
