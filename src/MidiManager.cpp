@@ -28,6 +28,7 @@ void MidiManager::handleMidiControlChange(byte channel, byte control, byte value
 {
   // store the value in the parameter array
   remoteValues[control] = value;
+  sync[control] = false;
 }
 
 void MidiManager::update()
