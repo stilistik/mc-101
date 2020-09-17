@@ -117,9 +117,21 @@ bool MidiManager::isCurrentChannelSynchronizing()
   for (int ctr = start; ctr < end; ++ctr)
   {
     if (!sync[ctr])
+    {
+      timer = millis();
       return true;
+    }
   }
-  return false;
+
+  unsigned long elapsed = millis() - timer;
+  if (elapsed > syncDuration)
+  {
+    return false;
+  }
+  else
+  {
+    return true;
+  }
 }
 
 int MidiManager::getMidiChannelFromPotIndex(int potIndex)

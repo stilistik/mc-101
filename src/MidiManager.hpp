@@ -17,7 +17,9 @@ private:
   const int ledPin = 21;
   const int tolerance = 2;
   const int midiControlCount = STATIC_POTENTIOMETERS + CHANNELS * CHANNEL_POTENTIOMETERS;
+  const unsigned long syncDuration = 1000; // ms
 
+  unsigned long timer = 0;
   std::vector<int> midiValues = std::vector<int>(midiControlCount);
   std::vector<int> remoteValues = std::vector<int>(midiControlCount);
   std::vector<bool> sync = std::vector<bool>(midiControlCount);
