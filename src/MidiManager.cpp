@@ -61,6 +61,8 @@ void MidiManager::update()
 
 void MidiManager::sendMidi()
 {
+  // we get the changes from the input manager, we are only interested in
+  // interactions, i.e. pot values that changed since the last iteration
   std::map<int, int> changes = master->inputManager->getChangedPotValues();
   if (changes.size() == 0)
   {
@@ -72,13 +74,18 @@ void MidiManager::sendMidi()
   {
     // compute midi value
     int potIndex = it->first;
-    int midiValue = map(it->second, 0, 1023, 0, 127);
 
     // get the midi channel
     int midiChannel = this->getMidiChannelFromPotIndex(potIndex);
+    int midiValue = midiValues[midiChannel];
+    int remoteValue = remoteValues[midiChannel];
 
-    // send midi value to daw
-    usbMIDI.sendControlChange(midiChannel, midiValue, 1);
+    if (abs(midiValue - remoteValue) >= midiTolerance)
+    {
+      // if the midi value is significantly different from the last observed
+      // remote value, send midi value to DAW
+      usbMIDI.sendControlChange(midiChannel, midiValue, 1);
+    }
   }
 }
 
@@ -97,7 +104,7 @@ void MidiManager::updateSync()
     midiValues[midiChannel] = midiValue;
     int remoteValue = this->getRemoteValue(midiChannel);
 
-    if (abs(midiValue - remoteValue) < 2)
+    if (abs(midiValue - remoteValue) <= midiTolerance)
     {
       sync[midiChannel] = true;
     }
