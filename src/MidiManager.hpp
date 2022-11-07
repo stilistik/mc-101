@@ -26,10 +26,10 @@ private:
 
   static void staticControlChangeHandler(byte channel, byte control, byte value);
   void handleMidiControlChange(byte channel, byte control, byte value);
-  
+
   int getMidiChannelFromPotIndex(int potIndex);
   bool isCurrentChannelSynchronizing();
-  
+
   void sendMidi();
   void updateSync();
 
@@ -39,6 +39,7 @@ public:
   int getMidiValue(int midiChannel);
   int getRemoteValue(int midiChannel);
   bool isSynchronized(int midiChannel);
+  std::vector<int> &getMidiValues();
 
   void onChannelChange(int newChannel);
 };

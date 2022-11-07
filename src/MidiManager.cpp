@@ -41,17 +41,18 @@ void MidiManager::update()
 {
   // update the synchronized state
   this->updateSync();
+  this->sendMidi();
 
-  // if we are not synchronizing, send midi changes
-  if (!isCurrentChannelSynchronizing())
-  {
-    this->sendMidi();
-    digitalWrite(ledPin, LOW);
-  }
-  else
-  {
-    digitalWrite(ledPin, HIGH);
-  }
+  // // if we are not synchronizing, send midi changes
+  // if (!isCurrentChannelSynchronizing())
+  // {
+  //   this->sendMidi();
+  //   digitalWrite(ledPin, LOW);
+  // }
+  // else
+  // {
+  //   digitalWrite(ledPin, HIGH);
+  // }
 
   while (usbMIDI.read())
   {
@@ -157,6 +158,11 @@ int MidiManager::getMidiChannelFromPotIndex(int potIndex)
 int MidiManager::getMidiValue(int midiChannel)
 {
   return midiValues[midiChannel];
+}
+
+std::vector<int> &MidiManager::getMidiValues()
+{
+  return midiValues;
 }
 
 int MidiManager::getRemoteValue(int midiChannel)
