@@ -93,7 +93,7 @@ void MidiManager::sendMidi()
 void MidiManager::updateSync()
 {
   std::vector<int> potValues = master->inputManager->getPotValues();
-  for (uint ctr = 0; ctr < potValues.size(); ++ctr)
+  for (unsigned int ctr = 0; ctr < potValues.size(); ++ctr)
   {
     // compute midi value
     int midiValue = map(potValues[ctr], 0, 1023, 0, 127);

@@ -19,7 +19,7 @@ InputManager::InputManager(MasterController *master)
 
 void InputManager::update()
 {
-  for (uint ctr = 0; ctr < potValues.size(); ++ctr)
+  for (unsigned int ctr = 0; ctr < potValues.size(); ++ctr)
   {
     // convert ctr to bit
     bit1 = bitRead((ctr % 8), 0);
@@ -60,7 +60,7 @@ std::vector<int> &InputManager::getPotValues()
 std::map<int, int> InputManager::getChangedPotValues()
 {
   std::map<int, int> changes;
-  for (uint ctr = 0; ctr < potValues.size(); ++ctr)
+  for (unsigned int ctr = 0; ctr < potValues.size(); ++ctr)
   {
     if (abs(potValues[ctr] - prevPotValues[ctr]) > sensitivity)
     {

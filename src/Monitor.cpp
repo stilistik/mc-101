@@ -1,21 +1,21 @@
 #include "Monitor.hpp"
 #include "Arduino.h"
 
-Monitor::Monitor(uint interval)
+Monitor::Monitor(unsigned int interval)
 {
   this->interval = interval;
 
   Serial.begin(9600);
   pinMode(ledPin, OUTPUT);
 
-  uint start = millis();
-  uint now = millis();
+  unsigned int start = millis();
+  unsigned int now = millis();
 
   // try for 5 seconds to connect to the serial port
   while (!Serial && (now - start < serialConnectTimeout))
   {
     now = millis();
-    uint delta = now - start;
+    unsigned int delta = now - start;
 
     // blink the led during serial monitor connection
     if (delta % 1000 > 500)
@@ -33,7 +33,7 @@ Monitor::Monitor(uint interval)
 
 void Monitor::print(int number)
 {
-  uint now = millis();
+  unsigned int now = millis();
   if (now - this->lastUpdated > this->interval)
   {
     Serial.println(number);
@@ -43,7 +43,7 @@ void Monitor::print(int number)
 
 void Monitor::print(const char *str)
 {
-  uint now = millis();
+  unsigned int now = millis();
   if (now - this->lastUpdated > this->interval)
   {
     Serial.println(str);
@@ -53,7 +53,7 @@ void Monitor::print(const char *str)
 
 void Monitor::print(std::string str)
 {
-  uint now = millis();
+  unsigned int now = millis();
   if (now - this->lastUpdated > this->interval)
   {
     Serial.println(str.c_str());
@@ -63,12 +63,12 @@ void Monitor::print(std::string str)
 
 void Monitor::print(std::vector<int> &vec)
 {
-  uint now = millis();
+  unsigned int now = millis();
   if (now - this->lastUpdated > this->interval)
   {
     if (vec.size() == 0)
       return;
-    for (uint i = 0; i < vec.size(); ++i)
+    for (unsigned int i = 0; i < vec.size(); ++i)
     {
       Serial.print(vec[i]);
       Serial.print(" ");
@@ -80,12 +80,12 @@ void Monitor::print(std::vector<int> &vec)
 
 void Monitor::print(std::vector<bool> &vec)
 {
-  uint now = millis();
+  unsigned int now = millis();
   if (now - this->lastUpdated > this->interval)
   {
     if (vec.size() == 0)
       return;
-    for (uint i = 0; i < vec.size(); ++i)
+    for (unsigned int i = 0; i < vec.size(); ++i)
     {
       Serial.print(vec[i]);
       Serial.print(" ");
@@ -97,7 +97,7 @@ void Monitor::print(std::vector<bool> &vec)
 
 void Monitor::print(std::map<int, int> &map)
 {
-  uint now = millis();
+  unsigned int now = millis();
   if (now - this->lastUpdated > this->interval)
   {
     if (map.size() == 0)

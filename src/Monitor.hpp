@@ -9,13 +9,13 @@
 class Monitor
 {
 private:
-  uint lastUpdated = 0;
-  uint interval = 1000;
+  unsigned int lastUpdated = 0;
+  unsigned int interval = 1000;
   const int ledPin = 21;
-  const uint serialConnectTimeout = 5000;
+  const unsigned int serialConnectTimeout = 5000;
 
 public:
-  Monitor(uint interval);
+  Monitor(unsigned int interval);
   void print(int number);
   void print(const char *str);
   void print(std::string str);
