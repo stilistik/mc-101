@@ -15,6 +15,7 @@ class Potentiometer
 {
 protected:
   unsigned int index = 0;
+  int reading = 0;
   int prevReading = 0;
   int bit1;
   int bit2;
@@ -23,10 +24,11 @@ protected:
   bool locked = false;
 
 public:
-  int reading = 0;
-
   Potentiometer(unsigned int index);
   virtual void read();
+  int getReading();
+  int getPreviousReading();
+  int getDifference();
   friend std::stringstream &operator<<(std::stringstream &ss, const Potentiometer &pot);
 };
 

@@ -14,4 +14,5 @@ void MasterController::update()
   channelManager->update();
   inputManager->update();
   midiManager->update();
+  monitor->print(inputManager->getPotValues());
 }

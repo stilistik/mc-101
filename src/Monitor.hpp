@@ -11,10 +11,11 @@
 class Monitor
 {
 private:
+  const int ledPin = 21;
   unsigned int lastUpdated = 0;
   unsigned int interval = 1000;
-  const int ledPin = 21;
   const unsigned int serialConnectTimeout = 3000;
+  std::stringstream buffer;
 
 public:
   Monitor(unsigned int interval);
@@ -27,5 +28,7 @@ public:
   void print(std::stringstream &ss);
   void print(const Potentiometer &pot);
 };
+
+extern Monitor monitor;
 
 #endif /* MONITOR_HPP_ */

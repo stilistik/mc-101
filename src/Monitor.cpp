@@ -1,6 +1,8 @@
 #include "Monitor.hpp"
 #include "Arduino.h"
 
+Monitor monitor = Monitor(50);
+
 Monitor::Monitor(unsigned int interval)
 {
   this->interval = interval;
