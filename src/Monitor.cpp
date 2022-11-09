@@ -115,3 +115,15 @@ void Monitor::print(std::map<int, int> &map)
     this->lastUpdated = now;
   }
 }
+
+void Monitor::print(std::stringstream &ss)
+{
+  print(ss.str());
+}
+
+void Monitor::print(const Potentiometer &pot)
+{
+  std::stringstream ss;
+  ss << pot;
+  print(ss);
+}
