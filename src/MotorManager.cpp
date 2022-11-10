@@ -51,6 +51,6 @@ void MotorManager::update()
 
 int MotorManager::getMidiChannelFromPotIndex(int potIndex)
 {
-  int channel = master->channelManager->getCurrentChannel();
+  int channel = master->channelManager->get_current_channel();
   return STATIC_POTENTIOMETERS + channel * CHANNEL_POTENTIOMETERS + potIndex;
 }

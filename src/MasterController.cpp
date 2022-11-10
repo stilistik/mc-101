@@ -3,7 +3,7 @@
 MasterController::MasterController()
 {
   monitor = std::make_unique<Monitor>(50);
-  channelManager = std::make_unique<ChannelManager>(this);
+  channelManager = std::make_unique<ChannelManager>();
   inputManager = std::make_unique<InputManager>(this);
   midiManager = std::make_unique<MidiManager>(this);
   // motorManager = std::make_unique<MotorManager>(this);

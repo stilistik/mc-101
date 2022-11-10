@@ -3,33 +3,31 @@
 
 #include "Arduino.h"
 
+// ***** 7-segment display *****
+//   ---------    ---------
+//   |   B   |    |   B   |
+//  C|       |A  C|       |A
+//   |---E---|    |---E---|
+//  G|       |D  G|       |D
+//   |   F   |    |   F   |
+//   ---------    ---------
+#define COMMON_CATHODE_1 24
+#define COMMON_CATHODE_2 25
+#define SEGMENT_A 26
+#define SEGMENT_B 27
+#define SEGMENT_C 28
+#define SEGMENT_D 29
+#define SEGMENT_E 30
+#define SEGMENT_F 31
+#define SEGMENT_G 32
+
 class Display
 {
 private:
-  // ***** 7-segment display *****
-  //   ---------    ---------
-  //   |   B   |    |   B   |
-  //  C|       |A  C|       |A
-  //   |---E---|    |---E---|
-  //  G|       |D  G|       |D
-  //   |   F   |    |   F   |
-  //   ---------    ---------
-
-  const int common_cathode_1 = 24;
-  const int common_cathode_2 = 25;
-  const int segment_a = 26;
-  const int segment_b = 27;
-  const int segment_c = 28;
-  const int segment_d = 29;
-  const int segment_e = 30;
-  const int segment_f = 31;
-  const int segment_g = 32;
-
-  const int segs[7] = {segment_a, segment_b, segment_c, segment_d, segment_e, segment_f, segment_g};
+  const int segs[7] = {SEGMENT_A, SEGMENT_B, SEGMENT_C, SEGMENT_D, SEGMENT_E, SEGMENT_F, SEGMENT_G};
   const byte numbers[10] = {0b1101111, 0b0001001, 0b1110011, 0b0111011, 0b0011101, 0b0111110, 0b1111110, 0b0001011, 0b1111111, 0b0111111};
 
 public:
-  Display();
   void show(int number);
 };
 

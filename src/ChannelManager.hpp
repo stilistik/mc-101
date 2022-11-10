@@ -5,28 +5,23 @@
 #include "Bounce2.h"
 
 #define CHANNELS 10
+#define BUTTON_PIN_1 22
+#define BUTTON_PIN_2 23
 
 class MasterController;
 
 class ChannelManager
 {
 private:
-  MasterController *master;
   Display display;
-  
+  int current_channel = 0;
 
-  int currentChannel = 0;
-
-  const int button_pin_1 = 22;
-  const int button_pin_2 = 23;
-
-  Bounce ch_plus_button = Bounce(button_pin_1, 10);
-  Bounce ch_minus_button = Bounce(button_pin_2, 10);
+  Bounce ch_plus_button = Bounce(BUTTON_PIN_1, 10);
+  Bounce ch_minus_button = Bounce(BUTTON_PIN_2, 10);
 
 public:
-  ChannelManager(MasterController *master);
   int update();
-  int getCurrentChannel();
+  int get_current_channel();
 };
 
 #endif /* CHANNELMANAGER_HPP_ */

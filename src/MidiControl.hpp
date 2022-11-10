@@ -1,14 +1,15 @@
 #ifndef MIDICONTROL_HPP_
 #define MIDICONTROL_HPP_
 
-#include <memory>
 #include "Potentiometer.hpp"
+#include "ChannelManager.hpp"
 
 class MidiControl
 {
-private:
+protected:
+  ChannelManager &ch_mgr;
   Potentiometer &pot;
-  unsigned int ctrl_channel;
+  unsigned int ctrl_channel = -1;
   unsigned int midi_channel;
   unsigned int midi_value = 0;
   unsigned int prev_midi_value = 0;
@@ -18,10 +19,11 @@ private:
   bool get_has_changed(unsigned int value);
   void print_changes();
   void send_control_change();
+  bool should_update();
 
 public:
-  MidiControl(Potentiometer &pot, unsigned int mch);
-  MidiControl(Potentiometer &pot, unsigned int cch, unsigned int mch);
+  MidiControl(ChannelManager &ch_mgr, Potentiometer &pot, unsigned int mch);
+  MidiControl(ChannelManager &ch_mgr, Potentiometer &pot, unsigned int cch, unsigned int mch);
   virtual void update();
   unsigned int get_midi_value();
 };

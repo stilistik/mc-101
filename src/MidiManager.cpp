@@ -119,7 +119,7 @@ void MidiManager::staticControlChangeHandler(byte channel, byte control, byte va
 
 bool MidiManager::isCurrentChannelSynchronizing()
 {
-  int channel = master->channelManager->getCurrentChannel();
+  int channel = master->channelManager->get_current_channel();
   int start = STATIC_POTENTIOMETERS + channel * CHANNEL_POTENTIOMETERS;
   int end = STATIC_POTENTIOMETERS + channel * CHANNEL_POTENTIOMETERS + MOTOR_POTENTIOMETERS;
   for (int ctr = start; ctr < end; ++ctr)
@@ -150,7 +150,7 @@ int MidiManager::getMidiChannelFromPotIndex(int potIndex)
   }
   else
   {
-    int channel = master->channelManager->getCurrentChannel();
+    int channel = master->channelManager->get_current_channel();
     return STATIC_POTENTIOMETERS + channel * CHANNEL_POTENTIOMETERS + (potIndex - STATIC_POTENTIOMETERS);
   }
 }

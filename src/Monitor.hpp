@@ -26,7 +26,6 @@ public:
   void print(std::vector<bool> &vec);
   void print(std::map<int, int> &map);
   void print(std::stringstream &ss);
-  void print(const Potentiometer &pot);
 };
 
 extern Monitor monitor;

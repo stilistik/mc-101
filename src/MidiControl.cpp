@@ -2,11 +2,17 @@
 #include "MidiControl.hpp"
 #include "Monitor.hpp"
 
-MidiControl::MidiControl(Potentiometer &pot, unsigned int mch) : pot(pot), midi_channel(mch) {}
-MidiControl::MidiControl(Potentiometer &pot, unsigned int cch, unsigned int mch) : pot(pot), ctrl_channel(cch), midi_channel(mch) {}
+MidiControl::MidiControl(ChannelManager &ch_mgr, Potentiometer &pot, unsigned int mch)
+    : pot(pot), midi_channel(mch) {}
+
+MidiControl::MidiControl(ChannelManager &ch_mgr, Potentiometer &pot, unsigned int ctrl_channel, unsigned int midi_channel)
+    : ch_mgr(ch_mgr), ctrl_channel(ctrl_channel), pot(pot), midi_channel(midi_channel) {}
 
 void MidiControl::update()
 {
+  if (!should_update())
+    return;
+
   prev_midi_value = midi_value;
 
   pot.read();
@@ -15,8 +21,17 @@ void MidiControl::update()
   if (get_has_changed(raw_midi_value))
   {
     midi_value = raw_midi_value;
+    print_changes();
     send_control_change();
   }
+}
+
+bool MidiControl::should_update()
+{
+  if (ctrl_channel == -1)
+    return true;
+  else
+    return ch_mgr.get_current_channel() == ctrl_channel;
 }
 
 void MidiControl::print_changes()
