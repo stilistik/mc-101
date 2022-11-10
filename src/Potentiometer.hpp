@@ -16,20 +16,20 @@ class Potentiometer
 protected:
   unsigned int index = 0;
   int reading = 0;
-  int prevReading = 0;
+  int prev_reading = 0;
+  int raw_reading = 0;
   int bit1;
   int bit2;
   int bit3;
 
   bool locked = false;
+  bool get_has_changed(unsigned int value);
+  void print_changes();
 
 public:
   Potentiometer(unsigned int index);
   virtual void read();
-  int getReading();
-  int getPreviousReading();
-  int getDifference();
-  friend std::stringstream &operator<<(std::stringstream &ss, const Potentiometer &pot);
+  int get_reading();
 };
 
 #endif /* POTENTIOMETER_HPP_ */

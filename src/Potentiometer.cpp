@@ -1,13 +1,12 @@
 #include "Arduino.h"
 #include "Potentiometer.hpp"
-#include <sstream>
 #include "Monitor.hpp"
 
-Potentiometer::Potentiometer(unsigned int index)
+Potentiometer::Potentiometer(unsigned int i)
 {
-  this->index = index;
-
-  monitor.print(index);
+  index = i;
+  reading = 0;
+  prev_reading = 0;
 
   // convert pot index to bits
   bit1 = bitRead((index % 8), 0);
@@ -17,7 +16,7 @@ Potentiometer::Potentiometer(unsigned int index)
 
 void Potentiometer::read()
 {
-  prevReading = reading;
+  prev_reading = reading;
 
   // set multiplexer select
   digitalWrite(SELECT_PIN_A, bit1);
@@ -26,26 +25,27 @@ void Potentiometer::read()
 
   auto read_pin = index < 8 ? MULTIPLEXER_PIN_1 : MULTIPLEXER_PIN_2;
 
-  reading = analogRead(read_pin);
+  unsigned int raw_reading = analogRead(read_pin);
+
+  if (get_has_changed(raw_reading))
+  {
+    reading = raw_reading;
+  }
 }
 
-int Potentiometer::getReading()
+bool Potentiometer::get_has_changed(unsigned int value)
+{
+  return abs(prev_reading - value) > POT_SENSITIVITY;
+}
+
+int Potentiometer::get_reading()
 {
   return reading;
 }
 
-int Potentiometer::getPreviousReading()
+void Potentiometer::print_changes()
 {
-  return prevReading;
-}
-
-int Potentiometer::getDifference()
-{
-  return reading - prevReading;
-}
-
-std::stringstream &operator<<(std::stringstream &ss, const Potentiometer &pot)
-{
-  ss << "Pot index:" << pot.index << " reading: " << pot.reading << " prevReading: " << pot.prevReading;
-  return ss;
+  std::stringstream ss;
+  ss << "Pot " << index << " | Value: " << reading << " | Prev: " << prev_reading;
+  monitor.print(ss);
 }
