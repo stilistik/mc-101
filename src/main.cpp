@@ -4,31 +4,16 @@
 #include "MidiControl.hpp"
 #include "Monitor.hpp"
 #include <vector>
+#include <map>
 
 ChannelManager ch_mgr = ChannelManager();
 
-MotorPotentiometer slider_pot_1 = MotorPotentiometer(0, 12, 1014);
-MotorPotentiometer slider_pot_2 = MotorPotentiometer(1, 10, 1013);
-MotorPotentiometer slider_pot_3 = MotorPotentiometer(2, 12, 1014);
-MotorPotentiometer slider_pot_4 = MotorPotentiometer(3, 13, 1015);
-MotorPotentiometer slider_pot_5 = MotorPotentiometer(4, 10, 1014);
+std::vector<MotorPotentiometer> slider_pots;
+std::vector<Potentiometer> rotary_pots;
+std::vector<Potentiometer> master_pots;
+std::map<unsigned int, MidiControl> midi_controls;
 
-Potentiometer rotary_pot_1 = Potentiometer(5);
-Potentiometer rotary_pot_2 = Potentiometer(6);
-Potentiometer rotary_pot_3 = Potentiometer(7);
-Potentiometer rotary_pot_4 = Potentiometer(8);
-Potentiometer rotary_pot_5 = Potentiometer(9);
-
-Potentiometer master_pot_1 = Potentiometer(10);
-Potentiometer master_pot_2 = Potentiometer(11);
-Potentiometer master_pot_3 = Potentiometer(12);
-Potentiometer master_pot_4 = Potentiometer(13);
-Potentiometer master_pot_5 = Potentiometer(14);
-Potentiometer master_pot_6 = Potentiometer(15);
-
-std::vector<MidiControl> midi_controls;
-
-void setup()
+void setup_teensy()
 {
   pinMode(SELECT_PIN_A, OUTPUT);
   pinMode(SELECT_PIN_B, OUTPUT);
@@ -46,34 +31,65 @@ void setup()
   pinMode(SEGMENT_E, OUTPUT);
   pinMode(SEGMENT_F, OUTPUT);
   pinMode(SEGMENT_G, OUTPUT);
+}
 
-  midi_controls.push_back(MidiControl(ch_mgr, master_pot_1, 1));
-  midi_controls.push_back(MidiControl(ch_mgr, master_pot_2, 2));
-  midi_controls.push_back(MidiControl(ch_mgr, master_pot_3, 3));
-  midi_controls.push_back(MidiControl(ch_mgr, master_pot_4, 4));
-  midi_controls.push_back(MidiControl(ch_mgr, master_pot_5, 5));
-  midi_controls.push_back(MidiControl(ch_mgr, master_pot_6, 6));
+void setup_potentiometers()
+{
+  slider_pots.push_back(MotorPotentiometer(0, 12, 1014));
+  slider_pots.push_back(MotorPotentiometer(1, 10, 1013));
+  slider_pots.push_back(MotorPotentiometer(2, 12, 1014));
+  slider_pots.push_back(MotorPotentiometer(3, 13, 1015));
+  slider_pots.push_back(MotorPotentiometer(4, 10, 1014));
 
-  for (int c = 0; c < 10; ++c)
+  rotary_pots.push_back(Potentiometer(5));
+  rotary_pots.push_back(Potentiometer(6));
+  rotary_pots.push_back(Potentiometer(7));
+  rotary_pots.push_back(Potentiometer(8));
+  rotary_pots.push_back(Potentiometer(9));
+
+  master_pots.push_back(Potentiometer(10));
+  master_pots.push_back(Potentiometer(11));
+  master_pots.push_back(Potentiometer(12));
+  master_pots.push_back(Potentiometer(13));
+  master_pots.push_back(Potentiometer(14));
+  master_pots.push_back(Potentiometer(15));
+}
+
+void setup_midi_controls()
+{
+  for (unsigned int midi_channel = 0; midi_channel < master_pots.size(); ++midi_channel)
   {
-    midi_controls.push_back(MidiControl(ch_mgr, slider_pot_1, c, 7 + c * 10 + 0));
-    midi_controls.push_back(MidiControl(ch_mgr, slider_pot_2, c, 7 + c * 10 + 1));
-    midi_controls.push_back(MidiControl(ch_mgr, slider_pot_3, c, 7 + c * 10 + 2));
-    midi_controls.push_back(MidiControl(ch_mgr, slider_pot_4, c, 7 + c * 10 + 3));
-    midi_controls.push_back(MidiControl(ch_mgr, slider_pot_5, c, 7 + c * 10 + 4));
-    midi_controls.push_back(MidiControl(ch_mgr, rotary_pot_1, c, 7 + c * 10 + 5));
-    midi_controls.push_back(MidiControl(ch_mgr, rotary_pot_2, c, 7 + c * 10 + 6));
-    midi_controls.push_back(MidiControl(ch_mgr, rotary_pot_3, c, 7 + c * 10 + 7));
-    midi_controls.push_back(MidiControl(ch_mgr, rotary_pot_4, c, 7 + c * 10 + 8));
-    midi_controls.push_back(MidiControl(ch_mgr, rotary_pot_5, c, 7 + c * 10 + 9));
+    midi_controls.insert({midi_channel, MidiControl(ch_mgr, master_pots[midi_channel], midi_channel)});
   }
+
+  for (unsigned int ctrl_ch = 0; ctrl_ch < CHANNELS; ++ctrl_ch)
+  {
+    for (unsigned int i = 0; i < slider_pots.size(); ++i)
+    {
+      unsigned int midi_channel = master_pots.size() + ctrl_ch * CHANNELS + i;
+      midi_controls.insert({midi_channel, MidiControl(ch_mgr, slider_pots[i], ctrl_ch, midi_channel)});
+    }
+
+    for (unsigned int i = 0; i < rotary_pots.size(); ++i)
+    {
+      unsigned int midi_channel = master_pots.size() + ctrl_ch * CHANNELS + slider_pots.size() + i;
+      midi_controls.insert({midi_channel, MidiControl(ch_mgr, rotary_pots[i], ctrl_ch, midi_channel)});
+    }
+  }
+}
+
+void setup()
+{
+  setup_teensy();
+  setup_potentiometers();
+  setup_midi_controls();
 }
 
 void loop()
 {
   ch_mgr.update();
-  for (auto &ctrl : midi_controls)
+  for (auto &entry : midi_controls)
   {
-    ctrl.update();
+    entry.second.update();
   }
 }
