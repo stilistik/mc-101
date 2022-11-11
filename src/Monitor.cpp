@@ -1,7 +1,7 @@
 #include "Monitor.hpp"
 #include "Arduino.h"
 
-Monitor monitor = Monitor(50);
+Monitor monitor = Monitor(0);
 
 Monitor::Monitor(unsigned int interval)
 {
@@ -33,77 +33,80 @@ Monitor::Monitor(unsigned int interval)
   digitalWrite(ledPin, LOW);
 }
 
-void Monitor::print(int number)
+bool Monitor::should_print()
 {
   unsigned int now = millis();
-  if (now - this->lastUpdated > this->interval)
+  if (now - lastUpdated > interval)
+  {
+    lastUpdated = now;
+    return true;
+  }
+  else
+    return false;
+}
+
+void Monitor::print(int number)
+{
+  if (should_print())
   {
     Serial.println(number);
-    this->lastUpdated = now;
   }
 }
 
 void Monitor::print(const char *str)
 {
-  unsigned int now = millis();
-  if (now - this->lastUpdated > this->interval)
+  if (should_print())
   {
     Serial.println(str);
-    this->lastUpdated = now;
   }
 }
 
 void Monitor::print(std::string str)
 {
-  unsigned int now = millis();
-  if (now - this->lastUpdated > this->interval)
+  if (should_print())
   {
     Serial.println(str.c_str());
-    this->lastUpdated = now;
   }
 }
 
 void Monitor::print(std::vector<int> &vec)
 {
-  unsigned int now = millis();
-  if (now - this->lastUpdated > this->interval)
+  if (vec.size() == 0)
+    return;
+  if (should_print())
   {
-    if (vec.size() == 0)
-      return;
     for (unsigned int i = 0; i < vec.size(); ++i)
     {
       Serial.print(vec[i]);
       Serial.print(" ");
     }
     Serial.println("");
-    this->lastUpdated = now;
   }
 }
 
 void Monitor::print(std::vector<bool> &vec)
 {
-  unsigned int now = millis();
-  if (now - this->lastUpdated > this->interval)
+  if (vec.size() == 0)
+    return;
+
+  if (should_print())
   {
-    if (vec.size() == 0)
-      return;
     for (unsigned int i = 0; i < vec.size(); ++i)
     {
       Serial.print(vec[i]);
       Serial.print(" ");
     }
     Serial.println("");
-    this->lastUpdated = now;
   }
 }
 
 void Monitor::print(std::map<int, int> &map)
 {
-  unsigned int now = millis();
-  if (now - this->lastUpdated > this->interval)
+  if (map.size() == 0)
+    return;
+
+  if (should_print())
   {
-    if (map.size() == 0)
-      return;
 
     std::map<int, int>::iterator it;
     for (it = map.begin(); it != map.end(); ++it)
@@ -114,7 +117,6 @@ void Monitor::print(std::map<int, int> &map)
       Serial.print(" ");
     }
     Serial.println("");
-    this->lastUpdated = now;
   }
 }
 

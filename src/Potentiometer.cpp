@@ -2,11 +2,11 @@
 #include "Potentiometer.hpp"
 #include "Monitor.hpp"
 
-Potentiometer::Potentiometer(unsigned int i)
+Potentiometer::Potentiometer(unsigned int i) : index(i)
 {
-  index = i;
   reading = 0;
   prev_reading = 0;
+  sensitivity = POT_SENSITIVITY;
 
   // convert pot index to bits
   bit1 = bitRead((index % 8), 0);
@@ -15,6 +15,15 @@ Potentiometer::Potentiometer(unsigned int i)
 }
 
 void Potentiometer::read()
+{
+  int raw_reading = read_raw();
+  if (get_has_changed(raw_reading))
+  {
+    reading = raw_reading;
+  }
+}
+
+int Potentiometer::read_raw()
 {
   prev_reading = reading;
 
@@ -25,17 +34,12 @@ void Potentiometer::read()
 
   auto read_pin = index < 8 ? MULTIPLEXER_PIN_1 : MULTIPLEXER_PIN_2;
 
-  unsigned int raw_reading = analogRead(read_pin);
-
-  if (get_has_changed(raw_reading))
-  {
-    reading = raw_reading;
-  }
+  return analogRead(read_pin);
 }
 
-bool Potentiometer::get_has_changed(unsigned int value)
+bool Potentiometer::get_has_changed(int value)
 {
-  return abs(prev_reading - value) > POT_SENSITIVITY;
+  return abs(prev_reading - value) > sensitivity;
 }
 
 int Potentiometer::get_reading()
@@ -46,6 +50,6 @@ int Potentiometer::get_reading()
 void Potentiometer::print_changes()
 {
   std::stringstream ss;
-  ss << "Pot " << index << " | Value: " << reading << " | Prev: " << prev_reading;
+  ss << "Pot " << index << " | Value: " << reading << " | Prev: " << prev_reading << " | Diff: " << prev_reading - reading << " | Sensitivity: " << sensitivity;
   monitor.print(ss);
 }

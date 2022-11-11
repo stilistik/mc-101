@@ -12,17 +12,22 @@ ChannelManager ch_mgr = ChannelManager();
 std::vector<MotorPotentiometer> slider_pots;
 std::vector<Potentiometer> rotary_pots;
 std::vector<Potentiometer> master_pots;
+
 std::map<unsigned int, MidiControl> midi_controls;
+std::map<unsigned int, MotorMidiControl> motor_midi_controls;
 
 void setup_teensy()
 {
+  // multiplexer
   pinMode(SELECT_PIN_A, OUTPUT);
   pinMode(SELECT_PIN_B, OUTPUT);
   pinMode(SELECT_PIN_C, OUTPUT);
 
+  // channel buttons
   pinMode(BUTTON_PIN_1, INPUT_PULLDOWN);
   pinMode(BUTTON_PIN_2, INPUT_PULLDOWN);
 
+  // display
   pinMode(COMMON_CATHODE_1, OUTPUT);
   pinMode(COMMON_CATHODE_2, OUTPUT);
   pinMode(SEGMENT_A, OUTPUT);
@@ -32,15 +37,28 @@ void setup_teensy()
   pinMode(SEGMENT_E, OUTPUT);
   pinMode(SEGMENT_F, OUTPUT);
   pinMode(SEGMENT_G, OUTPUT);
+
+  // motors
+  pinMode(MOTOR_ENABLE_PIN, OUTPUT);
+  pinMode(MOTOR_FORWARD_PIN_1, OUTPUT);
+  pinMode(MOTOR_REWIND_PIN_1, OUTPUT);
+  pinMode(MOTOR_FORWARD_PIN_2, OUTPUT);
+  pinMode(MOTOR_REWIND_PIN_2, OUTPUT);
+  pinMode(MOTOR_FORWARD_PIN_3, OUTPUT);
+  pinMode(MOTOR_REWIND_PIN_3, OUTPUT);
+  pinMode(MOTOR_FORWARD_PIN_4, OUTPUT);
+  pinMode(MOTOR_REWIND_PIN_4, OUTPUT);
+  pinMode(MOTOR_FORWARD_PIN_5, OUTPUT);
+  pinMode(MOTOR_REWIND_PIN_5, OUTPUT);
 }
 
 void setup_potentiometers()
 {
-  slider_pots.push_back(MotorPotentiometer(0, 12, 1014));
-  slider_pots.push_back(MotorPotentiometer(1, 10, 1013));
-  slider_pots.push_back(MotorPotentiometer(2, 12, 1014));
-  slider_pots.push_back(MotorPotentiometer(3, 13, 1015));
-  slider_pots.push_back(MotorPotentiometer(4, 10, 1014));
+  slider_pots.push_back(MotorPotentiometer(0, 12, 1014, MOTOR_FORWARD_PIN_1, MOTOR_REWIND_PIN_1));
+  slider_pots.push_back(MotorPotentiometer(1, 10, 1013, MOTOR_FORWARD_PIN_2, MOTOR_REWIND_PIN_2));
+  slider_pots.push_back(MotorPotentiometer(2, 12, 1014, MOTOR_FORWARD_PIN_3, MOTOR_REWIND_PIN_3));
+  slider_pots.push_back(MotorPotentiometer(3, 13, 1015, MOTOR_FORWARD_PIN_4, MOTOR_REWIND_PIN_4));
+  slider_pots.push_back(MotorPotentiometer(4, 10, 1014, MOTOR_FORWARD_PIN_5, MOTOR_REWIND_PIN_5));
 
   rotary_pots.push_back(Potentiometer(5));
   rotary_pots.push_back(Potentiometer(6));
@@ -68,7 +86,7 @@ void setup_midi_controls()
     for (unsigned int i = 0; i < slider_pots.size(); ++i)
     {
       unsigned int midi_channel = master_pots.size() + ctrl_ch * CHANNELS + i;
-      midi_controls.insert({midi_channel, MotorMidiControl(ch_mgr, slider_pots[i], ctrl_ch, midi_channel)});
+      motor_midi_controls.insert({midi_channel, MotorMidiControl(ch_mgr, slider_pots[i], ctrl_ch, midi_channel)});
     }
 
     for (unsigned int i = 0; i < rotary_pots.size(); ++i)
@@ -90,6 +108,10 @@ void loop()
 {
   ch_mgr.update();
   for (auto &entry : midi_controls)
+  {
+    entry.second.update();
+  }
+  for (auto &entry : motor_midi_controls)
   {
     entry.second.update();
   }

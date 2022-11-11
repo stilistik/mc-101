@@ -3,7 +3,7 @@
 #include "Monitor.hpp"
 
 MidiControl::MidiControl(ChannelManager &ch_mgr, Potentiometer &pot, unsigned int mch)
-    : pot(pot), midi_channel(mch) {}
+    : ch_mgr(ch_mgr), pot(pot), midi_channel(mch) {}
 
 MidiControl::MidiControl(ChannelManager &ch_mgr, Potentiometer &pot, unsigned int ctrl_channel, unsigned int midi_channel)
     : ch_mgr(ch_mgr), ctrl_channel(ctrl_channel), pot(pot), midi_channel(midi_channel) {}
@@ -58,7 +58,7 @@ bool MidiControl::should_update()
 void MidiControl::print_changes()
 {
   std::stringstream ss;
-  ss << "CC " << midi_channel << " | Value: " << midi_value << " | Prev: " << prev_midi_value;
+  ss << "CC " << midi_channel << " | Value: " << midi_value << " | Prev: " << prev_midi_value << " | Remote: " << remote_midi_value;
   monitor.print(ss);
 }
 

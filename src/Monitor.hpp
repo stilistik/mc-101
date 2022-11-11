@@ -17,6 +17,8 @@ private:
   const unsigned int serialConnectTimeout = 3000;
   std::stringstream buffer;
 
+  bool should_print();
+
 public:
   Monitor(unsigned int interval);
   void print(int number);

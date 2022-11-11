@@ -3,7 +3,7 @@
 
 #include <sstream>
 
-#define POT_SENSITIVITY 5
+#define POT_SENSITIVITY 8
 #define SELECT_PIN_A 35
 #define SELECT_PIN_B 34
 #define SELECT_PIN_C 33
@@ -15,16 +15,18 @@ class Potentiometer
 {
 protected:
   unsigned int index = 0;
-  int reading = 0;
-  int prev_reading = 0;
-  int raw_reading = 0;
+  unsigned int sensitivity;
   int bit1;
   int bit2;
   int bit3;
 
+  int reading = 0;
+  int prev_reading = 0;
+
   bool locked = false;
-  bool get_has_changed(unsigned int value);
+  bool get_has_changed(int value);
   void print_changes();
+  int read_raw();
 
 public:
   Potentiometer(unsigned int index);
