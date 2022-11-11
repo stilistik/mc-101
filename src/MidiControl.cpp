@@ -20,10 +20,31 @@ void MidiControl::update()
   unsigned int raw_midi_value = convert_reading_to_midi(pot.get_reading());
   if (get_has_changed(raw_midi_value))
   {
-    midi_value = raw_midi_value;
-    print_changes();
-    send_control_change();
+    // the raw midi value is different from the previous midi value
+    if (pickup_remote_value(raw_midi_value))
+    {
+      // the raw midi value has picked up the remote midi value.
+      // if the remote value was larger than the previous stored midi value, the raw value must
+      // overshoot the remote value before we update the state. this makes sure we dont modify
+      // remote values unintentionally.
+      midi_value = raw_midi_value;
+      print_changes();
+      send_control_change();
+    }
   }
+}
+
+bool MidiControl::pickup_remote_value(unsigned int value)
+{
+  if (remote_midi_value - midi_value > 0 && remote_midi_value - value > 0)
+  {
+    return false;
+  }
+  if (remote_midi_value - midi_value < 0 && remote_midi_value - value < 0)
+  {
+    return false;
+  }
+  return true;
 }
 
 bool MidiControl::should_update()
@@ -44,6 +65,7 @@ void MidiControl::print_changes()
 void MidiControl::send_control_change()
 {
   usbMIDI.sendControlChange(midi_channel, midi_value, 1);
+  remote_midi_value = midi_value;
 }
 
 bool MidiControl::get_has_changed(unsigned int value)
@@ -59,4 +81,9 @@ unsigned int MidiControl::convert_reading_to_midi(unsigned int reading)
 unsigned int MidiControl::get_midi_value()
 {
   return midi_value;
+}
+
+void MidiControl::set_remote_value(unsigned int value)
+{
+  remote_midi_value = value;
 }

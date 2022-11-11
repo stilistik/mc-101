@@ -2,6 +2,7 @@
 #include "Potentiometer.hpp"
 #include "MotorPotentiometer.hpp"
 #include "MidiControl.hpp"
+#include "MotorMidiControl.hpp"
 #include "Monitor.hpp"
 #include <vector>
 #include <map>
@@ -67,7 +68,7 @@ void setup_midi_controls()
     for (unsigned int i = 0; i < slider_pots.size(); ++i)
     {
       unsigned int midi_channel = master_pots.size() + ctrl_ch * CHANNELS + i;
-      midi_controls.insert({midi_channel, MidiControl(ch_mgr, slider_pots[i], ctrl_ch, midi_channel)});
+      midi_controls.insert({midi_channel, MotorMidiControl(ch_mgr, slider_pots[i], ctrl_ch, midi_channel)});
     }
 
     for (unsigned int i = 0; i < rotary_pots.size(); ++i)

@@ -20,7 +20,7 @@ private:
   Bounce ch_minus_button = Bounce(BUTTON_PIN_2, 10);
 
 public:
-  int update();
+  void update();
   int get_current_channel();
 };
 

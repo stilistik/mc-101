@@ -2,7 +2,7 @@
 #include "MasterController.hpp"
 #include "ChannelManager.hpp"
 
-int ChannelManager::update()
+void ChannelManager::update()
 {
   // channel plus button
   ch_plus_button.update();
@@ -27,7 +27,6 @@ int ChannelManager::update()
   }
 
   display.show(current_channel);
-  return 0;
 };
 
 int ChannelManager::get_current_channel()
