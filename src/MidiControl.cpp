@@ -3,10 +3,14 @@
 #include "Monitor.hpp"
 
 MidiControl::MidiControl(ChannelManager &ch_mgr, Potentiometer &pot, unsigned int mch)
-    : ch_mgr(ch_mgr), pot(pot), midi_channel(mch) {}
+    : ch_mgr(ch_mgr), pot(pot), midi_channel(mch)
+{
+}
 
 MidiControl::MidiControl(ChannelManager &ch_mgr, Potentiometer &pot, unsigned int ctrl_channel, unsigned int midi_channel)
-    : ch_mgr(ch_mgr), ctrl_channel(ctrl_channel), pot(pot), midi_channel(midi_channel) {}
+    : ch_mgr(ch_mgr), ctrl_channel(ctrl_channel), pot(pot), midi_channel(midi_channel)
+{
+}
 
 void MidiControl::update()
 {

@@ -87,6 +87,7 @@ void setup_midi_controls()
     {
       unsigned int midi_channel = master_pots.size() + ctrl_ch * CHANNELS + i;
       motor_midi_controls.insert({midi_channel, MotorMidiControl(ch_mgr, slider_pots[i], ctrl_ch, midi_channel)});
+      ch_mgr.register_listener(&motor_midi_controls.at(midi_channel));
     }
 
     for (unsigned int i = 0; i < rotary_pots.size(); ++i)

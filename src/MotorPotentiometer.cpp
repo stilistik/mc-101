@@ -22,15 +22,15 @@ void MotorPotentiometer::read()
 void MotorPotentiometer::forward()
 {
   digitalWrite(MOTOR_ENABLE_PIN, HIGH);
-  digitalWrite(forward_pin, HIGH);
-  digitalWrite(rewind_pin, LOW);
+  digitalWrite(forward_pin, LOW);
+  digitalWrite(rewind_pin, HIGH);
 }
 
 void MotorPotentiometer::rewind()
 {
   digitalWrite(MOTOR_ENABLE_PIN, HIGH);
-  digitalWrite(forward_pin, LOW);
-  digitalWrite(rewind_pin, HIGH);
+  digitalWrite(forward_pin, HIGH);
+  digitalWrite(rewind_pin, LOW);
 }
 
 void MotorPotentiometer::stop()

@@ -36,7 +36,7 @@ Monitor::Monitor(unsigned int interval)
 bool Monitor::should_print()
 {
   unsigned int now = millis();
-  if (now - lastUpdated > interval)
+  if (now - lastUpdated >= interval)
   {
     lastUpdated = now;
     return true;

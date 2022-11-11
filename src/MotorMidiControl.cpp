@@ -14,7 +14,7 @@ void MotorMidiControl::update()
   if (adjusting)
   {
     int diff = remote_midi_value - raw_midi_value;
-    if (diff < 1)
+    if (diff < -1)
     {
       pot.forward();
     }
@@ -25,11 +25,28 @@ void MotorMidiControl::update()
     else
     {
       pot.stop();
-      adjusting = false;
+
+      ctr++;
+      if (ctr >= 50)
+      {
+        // the memasured value must be within tolerance for a number of cycles
+        // before we stop adjusting and start sending midi again
+        adjusting = false;
+        ctr = 0;
+      }
     }
   }
   else
   {
     MidiControl::update();
+  }
+}
+
+void MotorMidiControl::on_channel_change(int channel)
+{
+  adjusting = false;
+  if (channel == ctrl_channel)
+  {
+    adjusting = true;
   }
 }
