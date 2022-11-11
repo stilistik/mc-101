@@ -18,6 +18,7 @@ public:
   MotorMidiControl(ChannelManager &ch_mgr, MotorPotentiometer &pot, unsigned int cch, unsigned int mch);
   void update() override;
   void on_channel_change(int channel) override;
+  void set_remote_value(unsigned int value) override;
 };
 
 #endif /* MOTORMIDICONTROL_HPP_ */

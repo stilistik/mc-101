@@ -28,7 +28,7 @@ public:
   MidiControl(ChannelManager &ch_mgr, Potentiometer &pot, unsigned int cch, unsigned int mch);
   virtual void update();
   unsigned int get_midi_value();
-  void set_remote_value(unsigned int remote_value);
+  virtual void set_remote_value(unsigned int remote_value);
 };
 
 #endif /* MIDICONTROL_HPP_ */

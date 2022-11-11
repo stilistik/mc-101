@@ -98,15 +98,33 @@ void setup_midi_controls()
   }
 }
 
+void on_control_change(byte channel, byte control, byte value)
+{
+  if (midi_controls.count(control) > 0)
+  {
+    midi_controls.at(control).set_remote_value(value);
+  }
+
+  if (motor_midi_controls.count(control) > 0)
+  {
+    motor_midi_controls.at(control).set_remote_value(value);
+  }
+}
+
 void setup()
 {
   setup_teensy();
   setup_potentiometers();
   setup_midi_controls();
+  usbMIDI.setHandleControlChange(on_control_change);
 }
 
 void loop()
 {
+  while (usbMIDI.read())
+  {
+  }
+
   ch_mgr.update();
   for (auto &entry : midi_controls)
   {

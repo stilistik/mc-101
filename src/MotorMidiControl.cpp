@@ -50,3 +50,9 @@ void MotorMidiControl::on_channel_change(int channel)
     adjusting = true;
   }
 }
+
+void MotorMidiControl::set_remote_value(unsigned int value)
+{
+  remote_midi_value = value;
+  adjusting = true;
+}
