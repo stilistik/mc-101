@@ -27,7 +27,7 @@ void MotorMidiControl::update()
       pot.stop();
 
       ctr++;
-      if (ctr >= 50)
+      if (ctr >= ADUJSTMENT_TARGET_CYCLES)
       {
         // the memasured value must be within tolerance for a number of cycles
         // before we stop adjusting and start sending midi again
