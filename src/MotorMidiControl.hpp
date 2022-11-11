@@ -4,6 +4,8 @@
 #include "MidiControl.hpp"
 #include "MotorPotentiometer.hpp"
 
+#define MOTOR_MIDI_TOLERANCE 1
+
 class MotorMidiControl : public MidiControl, public ChannelChangeListener
 {
 protected:

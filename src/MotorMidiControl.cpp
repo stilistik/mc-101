@@ -14,11 +14,11 @@ void MotorMidiControl::update()
   if (adjusting)
   {
     int diff = remote_midi_value - raw_midi_value;
-    if (diff < -1)
+    if (diff < -MOTOR_MIDI_TOLERANCE)
     {
       pot.forward();
     }
-    else if (diff > 1)
+    else if (diff > MOTOR_MIDI_TOLERANCE)
     {
       pot.rewind();
     }
