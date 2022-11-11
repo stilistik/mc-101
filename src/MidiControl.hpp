@@ -13,7 +13,7 @@ protected:
   unsigned int midi_channel;
   unsigned int midi_value = 0;
   unsigned int prev_midi_value = 0;
-  unsigned int remote_midi_value = 50;
+  unsigned int remote_midi_value = 0;
 
   unsigned int
   convert_reading_to_midi(unsigned int reading);
