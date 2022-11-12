@@ -33,12 +33,17 @@ void MotorMidiControl::update()
         // before we stop adjusting and start sending midi again
         adjusting = false;
         ctr = 0;
+        tmp_target = raw_midi_value;
       }
     }
   }
   else
   {
-    MidiControl::update();
+    if (tmp_target == -1 || abs(tmp_target - raw_midi_value) > 2)
+    {
+      MidiControl::update();
+      tmp_target = -1;
+    }
   }
 }
 

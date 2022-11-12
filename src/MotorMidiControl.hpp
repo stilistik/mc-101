@@ -13,6 +13,7 @@ protected:
   MotorPotentiometer &pot;
   bool adjusting = true;
   unsigned int ctr = 0;
+  int tmp_target = -1;
 
 public:
   MotorMidiControl(ChannelManager &ch_mgr, MotorPotentiometer &pot, unsigned int cch, unsigned int mch);
