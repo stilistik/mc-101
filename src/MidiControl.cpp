@@ -51,7 +51,7 @@ bool MidiControl::pickup_remote_value(unsigned int value)
   return true;
 }
 
-bool MidiControl::should_update()
+bool MidiControl::is_active_channel()
 {
   if (ctrl_channel == -1)
     return true;

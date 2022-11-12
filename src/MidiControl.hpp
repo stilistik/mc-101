@@ -20,7 +20,7 @@ protected:
   bool get_has_changed(unsigned int value);
   void print_changes();
   void send_control_change();
-  bool should_update();
+  bool is_active_channel();
   bool pickup_remote_value(unsigned int value);
 
 public:
