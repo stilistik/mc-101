@@ -5,7 +5,7 @@ MotorMidiControl::MotorMidiControl(ChannelManager &ch_mgr, MotorPotentiometer &p
 
 void MotorMidiControl::update()
 {
-  if (!should_update())
+  if (!is_active_channel())
     return;
 
   pot.read();
