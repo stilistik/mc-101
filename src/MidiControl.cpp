@@ -96,4 +96,9 @@ void MidiControl::set_remote_value(unsigned int value)
 
 void MidiControl::on_channel_change(int channel)
 {
+  // on channel change we update the local midi value state with the current
+  // raw reading. this introduces a difference between the remote midi value and
+  // the current midi value, triggering the pickup mechanic without actually sending
+  // a midi control change command.
+  midi_value = convert_reading_to_midi(pot.get_reading());
 }
