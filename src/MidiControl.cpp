@@ -14,8 +14,10 @@ MidiControl::MidiControl(ChannelManager &ch_mgr, Potentiometer &pot, unsigned in
 
 void MidiControl::update()
 {
-  if (!is_active_channel())
+  if (!is_active_channel() || ch_mgr.get_is_changing())
+  {
     return;
+  }
 
   prev_midi_value = midi_value;
 

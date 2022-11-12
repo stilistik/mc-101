@@ -31,7 +31,7 @@ void MotorMidiControl::update()
       {
         // the memasured value must be within tolerance for a number of cycles
         // before we stop adjusting and start sending midi again
-        adjusting = false;
+        set_adjusting(false);
         ctr = 0;
         tmp_target = raw_midi_value;
       }
@@ -49,15 +49,24 @@ void MotorMidiControl::update()
 
 void MotorMidiControl::on_channel_change(int channel)
 {
-  adjusting = false;
   if (channel == ctrl_channel)
   {
-    adjusting = true;
+    set_adjusting(true);
+  }
+  else
+  {
+    set_adjusting(false);
   }
 }
 
 void MotorMidiControl::set_remote_value(unsigned int value)
 {
   remote_midi_value = value;
-  adjusting = true;
+  set_adjusting(true);
+}
+
+void MotorMidiControl::set_adjusting(bool value)
+{
+  adjusting = value;
+  ch_mgr.set_is_changing(adjusting, midi_channel);
 }

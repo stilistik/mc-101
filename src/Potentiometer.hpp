@@ -32,6 +32,7 @@ public:
   Potentiometer(unsigned int index);
   virtual void read();
   int get_reading();
+  unsigned int get_index();
 };
 
 #endif /* POTENTIOMETER_HPP_ */

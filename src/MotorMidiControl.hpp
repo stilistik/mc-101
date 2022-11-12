@@ -15,6 +15,8 @@ protected:
   unsigned int ctr = 0;
   int tmp_target = -1;
 
+  void set_adjusting(bool value);
+
 public:
   MotorMidiControl(ChannelManager &ch_mgr, MotorPotentiometer &pot, unsigned int cch, unsigned int mch);
   void update() override;

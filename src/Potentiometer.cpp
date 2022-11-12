@@ -53,3 +53,8 @@ void Potentiometer::print_changes()
   ss << "Pot " << index << " | Value: " << reading << " | Prev: " << prev_reading << " | Diff: " << prev_reading - reading << " | Sensitivity: " << sensitivity;
   monitor.print(ss);
 }
+
+unsigned int Potentiometer::get_index()
+{
+  return index;
+}

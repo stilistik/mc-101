@@ -39,3 +39,30 @@ void ChannelManager::register_listener(ChannelChangeListener *listener)
 {
   listeners.push_back(listener);
 }
+
+void ChannelManager::set_is_changing(bool value, unsigned int channel)
+{
+  std::map<int, bool>::iterator itr;
+
+  itr = adjusting_motors.find(channel);
+  if (itr != adjusting_motors.end())
+  {
+    itr->second = value;
+  }
+  else
+  {
+    adjusting_motors.insert({channel, value});
+  }
+}
+
+bool ChannelManager::get_is_changing()
+{
+  for (auto entry : adjusting_motors)
+  {
+    if (entry.second)
+    {
+      return true;
+    }
+  }
+  return false;
+}
