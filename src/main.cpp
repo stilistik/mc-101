@@ -79,6 +79,7 @@ void setup_midi_controls()
   for (unsigned int midi_channel = 0; midi_channel < master_pots.size(); ++midi_channel)
   {
     midi_controls.insert({midi_channel, MidiControl(ch_mgr, master_pots[midi_channel], midi_channel)});
+    ch_mgr.register_listener(&midi_controls.at(midi_channel));
   }
 
   for (unsigned int ctrl_ch = 0; ctrl_ch < CHANNELS; ++ctrl_ch)
@@ -94,6 +95,7 @@ void setup_midi_controls()
     {
       unsigned int midi_channel = master_pots.size() + ctrl_ch * CHANNELS + slider_pots.size() + i;
       midi_controls.insert({midi_channel, MidiControl(ch_mgr, rotary_pots[i], ctrl_ch, midi_channel)});
+      ch_mgr.register_listener(&midi_controls.at(midi_channel));
     }
   }
 }

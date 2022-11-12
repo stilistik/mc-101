@@ -7,7 +7,7 @@
 #define MOTOR_MIDI_TOLERANCE 1
 #define ADUJSTMENT_TARGET_CYCLES 50
 
-class MotorMidiControl : public MidiControl, public ChannelChangeListener
+class MotorMidiControl : public MidiControl
 {
 protected:
   MotorPotentiometer &pot;

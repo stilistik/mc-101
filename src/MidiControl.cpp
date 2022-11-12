@@ -91,3 +91,7 @@ void MidiControl::set_remote_value(unsigned int value)
 {
   remote_midi_value = value;
 }
+
+void MidiControl::on_channel_change(int channel)
+{
+}

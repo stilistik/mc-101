@@ -4,7 +4,7 @@
 #include "Potentiometer.hpp"
 #include "ChannelManager.hpp"
 
-class MidiControl
+class MidiControl : public ChannelChangeListener
 {
 protected:
   ChannelManager &ch_mgr;
@@ -29,6 +29,7 @@ public:
   virtual void update();
   unsigned int get_midi_value();
   virtual void set_remote_value(unsigned int remote_value);
+  void on_channel_change(int channel) override;
 };
 
 #endif /* MIDICONTROL_HPP_ */
