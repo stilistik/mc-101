@@ -42,11 +42,11 @@ void MidiControl::update()
 
 bool MidiControl::pickup_remote_value(unsigned int value)
 {
-  if (remote_midi_value - midi_value > 0 && remote_midi_value - value > 0)
+  if (remote_midi_value - midi_value > 0 && abs(remote_midi_value - value) > 0)
   {
     return false;
   }
-  if (remote_midi_value - midi_value < 0 && remote_midi_value - value < 0)
+  if (remote_midi_value - midi_value < 0 && abs(remote_midi_value - value) > 0)
   {
     return false;
   }
