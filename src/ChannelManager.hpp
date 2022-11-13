@@ -9,6 +9,7 @@
 #define CHANNELS 10
 #define BUTTON_PIN_1 22
 #define BUTTON_PIN_2 23
+#define LED_PIN 21
 
 class ChannelChangeListener
 {

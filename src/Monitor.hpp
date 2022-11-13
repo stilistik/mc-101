@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include "Potentiometer.hpp"
+#include "ChannelManager.hpp"
 #include <string>
 #include <vector>
 #include <map>
@@ -11,7 +12,6 @@
 class Monitor
 {
 private:
-  const int ledPin = 21;
   unsigned int lastUpdated = 0;
   unsigned int interval = 1000;
   const unsigned int serialConnectTimeout = 3000;

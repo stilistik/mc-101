@@ -8,7 +8,7 @@ Monitor::Monitor(unsigned int interval)
   this->interval = interval;
 
   Serial.begin(9600);
-  pinMode(ledPin, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
 
   unsigned int start = millis();
   unsigned int now = millis();
@@ -22,15 +22,15 @@ Monitor::Monitor(unsigned int interval)
     // blink the led during serial monitor connection
     if (delta % 1000 > 500)
     {
-      digitalWrite(ledPin, HIGH);
+      digitalWrite(LED_PIN, HIGH);
     }
     else
     {
-      digitalWrite(ledPin, LOW);
+      digitalWrite(LED_PIN, LOW);
     }
   }
   Serial.println("Serial connected.");
-  digitalWrite(ledPin, LOW);
+  digitalWrite(LED_PIN, LOW);
 }
 
 bool Monitor::should_print()

@@ -18,6 +18,15 @@ void ChannelManager::update()
     set_channel(current_channel - 1);
   }
 
+  if (get_is_changing())
+  {
+    digitalWrite(LED_PIN, HIGH);
+  }
+  else
+  {
+    digitalWrite(LED_PIN, LOW);
+  }
+
   display.show(current_channel);
 };
 
